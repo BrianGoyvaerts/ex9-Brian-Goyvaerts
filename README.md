@@ -11,4 +11,7 @@ http://coenraets.org/blog/2013/04/implementing-restful-services-with-node-js-and
 Hier lijkt een gelijkaardige oefening uitgewerkt te zijn, ik test deze. 
 *update: deze heeft niet geholpen 
 
+Op aanraden van klasgenoten probeer ik met mongoose. 
+http://mongoosejs.com/
+
 
