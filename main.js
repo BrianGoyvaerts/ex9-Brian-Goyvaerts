@@ -11,10 +11,87 @@ var validator = require("./Validate.js");
 var app = express();
 app.use(parser.json());
 
-//LOCATIONS
+
+app.get("/Buildings", function (request, response) {
+    "use strict";
+    response.send(dalBuildings.listAllBuildings());
+});
+
+app.get("/Buildings/:id", function (request, response) {
+    "use strict";
+    var Building = dalBuildings.findBuildings(request.params.id);
+    if (Building) {
+        response.send(Building);
+    } else {
+        response.status(404).send();
+    }
+});
+
+app.post("/Buildings", function (request, response) {
+    "use strict";
+    var Building = request.body; 
+
+    var errors = validator.fieldsNotEmpty(Building, "Name", "City");
+    
+    if (errors) {
+        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
+        return;
+    }
+
+    var existingBuilding = dalBuildings.findBuilding(Building.Name);
+    if (existingBuilding) {
+        response.status(409).send({msg: "Name must be unique", link: "../Buildings/" + existingBuilding.id});
+        return;
+    }
+    Building.id = Building.Name;
+    dalBuildings.saveBuilding(Building);
+    response.status(201).location("../Buildings/" + Building.id).send();
+});
+
+
+
+
+app.get("/Blocks", function (request, response) {
+    "use strict";
+    response.send(dalBlocks.listAllBlocks());
+});
+
+app.get("/Blocks/:id", function (request, response) {
+    "use strict";
+    var Block = dalBlocks.findBlock(request.params.id);
+    if (Block) {
+        response.send(Block);
+    } else {
+        response.status(404).send();
+    }
+});
+
+app.post("/Blocks", function (request, response) {
+    "use strict";
+    var Block = request.body;
+
+    var errors = validator.fieldsNotEmpty(Block, "Blockid", "blockname", "buildingid");
+    if (errors) {
+        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
+        return;
+    }
+
+    var existingBlock = dalBlocks.findBlock(Block.Blockid);
+    if (existingBlock) {
+        response.status(409).send({msg: "Blockid must be unique", link: "../Blocks/" + existingBlock.id});
+        return;
+    }
+    Block.id = Block.Blockid;
+    dalBlocks.saveBlock(Block);
+    response.status(201).location("../Blocks/" + Block.id).send();
+});
+
+
+
+
 app.get("/Locations", function (request, response) {
     "use strict";
-    response.send(dalLocations.listAllLocations());
+    response.send(dalLocations.listAllSales());
 });
 
 app.get("/Locations/:id", function (request, response) {
@@ -29,133 +106,62 @@ app.get("/Locations/:id", function (request, response) {
 
 app.post("/Locations", function (request, response) {
     "use strict";
-    var Locatie = request.body; //kon geen locations gebruiken want dit is een bestaande functie => hoop dat ik 'location' op de juiste plekken heb aangepast naar 'locatie'
+    var Location = request.body;
 
-    var errors = validator.fieldsNotEmpty(Locatie, "Naam", "Stad", "Adres", "Capaciteit");
+    var errors = validator.fieldsNotEmpty(Location, "name", "type", "coordinate", "floor", "capacity", "blockid", "blockid");
     if (errors) {
         response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
         return;
     }
 
-    var existingLocation = dalLocations.findLocation(Locatie.Naam);
-    if (existingLocation) {
-        response.status(409).send({msg: "Naam moet uniek zijn, deze bestaat al", link: "../Locations/" + existingLocation.id});
+    var existingLocation = dalLocations.findLocation(Location.locationid);
+    if (existinglocation) {
+        response.status(409).send({msg: "id must be unique", link: "../Locations/" + existingLocation.id});
         return;
     }
-    Locatie.id = Locatie.Naam;
-    dalLocations.saveLocation(Locatie);
-    response.status(201).location("../Locations/" + Locatie.id).send();
+    Location.id = Location.locationid;
+    dalLocations.saveLocation(Location);
+    response.status(201).location("../Locations/" + Location.id).send();
 });
 
-//PRODUCTS
-app.get("/Products", function (request, response) {
+
+
+
+app.get("/Drones", function (request, response) {
     "use strict";
-    response.send(dalProducts.listAllProducts());
+    response.send(dalDrones.listAllDrones());
 });
 
-app.get("/Products/:id", function (request, response) {
+app.get("/Drones/:id", function (request, response) {
     "use strict";
-    var Product = dalProducts.findProduct(request.params.id);
-    if (Product) {
-        response.send(Product);
+    var Drone = dalDrones.findDrone(request.params.id);
+    if (Drone) {
+        response.send(Drone);
     } else {
         response.status(404).send();
     }
 });
 
-app.post("/Products", function (request, response) {
+app.post("/Drones", function (request, response) {
     "use strict";
-    var Product = request.body;
+    var Drone = request.body;
 
-    var errors = validator.fieldsNotEmpty(Product, "productid", "Productname", "price");
+    var errors = validator.fieldsNotEmpty(Drone, "name", "mac_address", "locationid", "last_packet_date", "blockid", "buildingid");
     if (errors) {
         response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
         return;
     }
 
-    var existingProduct = dalProducts.findProduct(Product.productid);
-    if (existingProduct) {
-        response.status(409).send({msg: "Productid moet uniek zijn, deze bestaat al", link: "../Products/" + existingProduct.id});
+    var existingDrone = dalDrones.findDrone(Drone.id);
+    if (existingDrone) {
+        response.status(409).send({msg: "id must be unique", link: "..//" + existingDrone.id});
         return;
     }
-    Product.id = Product.productid;
-    dalProducts.saveProduct(Product);
-    response.status(201).location("../Products/" + Product.id).send();
+    dalDrones.saveDrone(Drone);
+    response.status(201).location("../Drones/" + Drone.id).send();
 });
 
-//SALES
-app.get("/Sales", function (request, response) {
-    "use strict";
-    response.send(dalSales.listAllSales());
-});
-
-app.get("/Sales/:id", function (request, response) {
-    "use strict";
-    var Sale = dalSales.findLocation(request.params.id);
-    if (Sale) {
-        response.send(Sale);
-    } else {
-        response.status(404).send();
-    }
-});
-
-app.post("/Sales", function (request, response) {
-    "use strict";
-    var Sale = request.body;
-
-    var errors = validator.fieldsNotEmpty(Sale, "Date", "[Productid]", "revenue", "Saleid");
-    if (errors) {
-        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
-        return;
-    }
-
-    var existingSale = dalSales.findSale(Sale.saleid);
-    if (existingSale) {
-        response.status(409).send({msg: "id moet uniek zijn, deze bestaat al", link: "../Sales/" + existingSale.id});
-        return;
-    }
-    Sale.id = Sale.Saleid;
-    dalSales.saveSale(Sale);
-    response.status(201).location("../Sales/" + Sale.id).send();
-});
-
-//AANWEZIGHEDEN
-app.get("/Aanwezigheden", function (request, response) {
-    "use strict";
-    response.send(dalAanwezigheden.listAllAanwezigheden());
-});
-
-app.get("/Aanwezigheden/:id", function (request, response) {
-    "use strict";
-    var Aanwezigheid = dalAanwezigheden.findAanwezigheid(request.params.id);
-    if (Aanwezigheid) {
-        response.send(Aanwezigheid);
-    } else {
-        response.status(404).send();
-    }
-});
-
-app.post("/Aanwezigheden", function (request, response) {
-    "use strict";
-    var Aanwezigheid = request.body;
-
-    var errors = validator.fieldsNotEmpty(Aanwezigheid, "Date", "unique count", "number  of sales", "ratio");
-    if (errors) {
-        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
-        return;
-    }
-
-    var existingAanwezigheid = dalAanwezigheden.findAanwezigheid(Aanwezigheid.Date);
-    if (existingAanwezigheid) {
-        response.status(409).send({msg: "De Datum moet uniek zijn, deze bestaat al", link: "../Aanwezigheden/" + existingAanwezigheid.id});
-        return;
-    }
-    Aanwezigheid.id = Aanwezigheid.Date;
-    dalAanwezigheden.saveAanwezigheid(Aanwezigheid);
-    response.status(201).location("../Aanwezigheden/" + Aanwezigheid.id).send();
-});
-
-app.listen(4567);
+app.listen(3556);
 console.log("Server started");
 
 console.log("Hellow World"); 
