@@ -1,19 +1,32 @@
-module.exports =  {
-  Buildings : {},
-  
-  saveBuilding : function(Building){
-    this.Building[Building.id]= Building;
-  },
-  listAllBuildings : function(){
-    var rtnValue =[];
-    for (var item in this.Buildings) {
-      rtnValue.push(this.Buildings[item]);
-    };
-    return rtnValue;
-  },
-  findBuildings : function(id){
-    return this.Buildings[id];
-  }
+var mongoose = require("mongoose");
+
+var BuildingSchema = mongoose.Schema({
+    BuildingID: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    Name: {
+        type: String,
+        required: true
+    },
+    City: {
+        type: String,
+        required: true
+    }
+});
+
+var Building = mongoose.model('Buildings', BuildingSchema);
+
+module.exports = {
+
+    listAllBuildings: function (callback) {
+        Building.find(callback);
+    },
+    findBuilding: function (City, callback) {
+        Building.find({City: city}, callback);
+    },
+    createBuilding: function (building, callback) {
+        Building.create(building, callback);
+    }
 };
-
-

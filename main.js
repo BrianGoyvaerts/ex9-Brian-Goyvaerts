@@ -1,33 +1,44 @@
 var express = require("express");
 var parser = require("body-parser");
 
-var dalBuildings = require("./BuildingStorage.js");
-var dalBlocks = require("./BlockStorage.js");
-var dalLocations = require("./LocationStorage.js");
-var dalDrones = require("./DroneStorage.js");
+var mongoose = require ("mongoose"); 
+mongoose.connect("mongodb://localhost/testing"); 
 
-var validator = require("./Validate.js");
+var dalBuildings    = require("./BuildingStorage.js");
+var dalBlocks       = require("./BlockStorage.js");
+var dalLocations    = require("./LocationStorage.js");
+var dalDrones       = require("./DroneStorage.js");
+
+var validateBuildings   = require("./Validators/validateBuildings"); 
+var validateBlocks      = require("./Validators/validateBlocks"); 
+var validateLocations   = require("./Validators/validateLocations"); 
+var validateDrones      = require("./Validators/validateDrones"); 
 
 var app = express();
 app.use(parser.json());
 
 
+
+//--Buildings--//
 app.get("/Buildings", function (request, response) {
-    "use strict";
-    response.send(dalBuildings.listAllBuildings());
-});
+    dalBuildings.listAllBuildings(function(error, Buildings){
+        if(error){
+            throw error; 
+        }
+    response.send(Locations); 
+    }); 
+}); 
 
-app.get("/Buildings/:id", function (request, response) {
-    "use strict";
-    var Building = dalBuildings.findBuildings(request.params.id);
-    if (Building) {
+app.get("/Buildings/:name", function (request, response) {
+    dalBuildings.findBuildings(request.params.name, function(error, Buildings){
+        if (error) {
+            throw error; 
+        }
         response.send(Building);
-    } else {
-        response.status(404).send();
-    }
-});
+    });
+}); 
 
-app.post("/Buildings", function (request, response) {
+/*app.post("/Buildings", function (request, response) {
     "use strict";
     var Building = request.body; 
 
@@ -91,7 +102,7 @@ app.post("/Blocks", function (request, response) {
 
 app.get("/Locations", function (request, response) {
     "use strict";
-    response.send(dalLocations.listAllSales());
+    response.send(dalLocations.listAllLocations());
 });
 
 app.get("/Locations/:id", function (request, response) {
@@ -115,7 +126,7 @@ app.post("/Locations", function (request, response) {
     }
 
     var existingLocation = dalLocations.findLocation(Location.locationid);
-    if (existinglocation) {
+    if (existingLocation) {
         response.status(409).send({msg: "id must be unique", link: "../Locations/" + existingLocation.id});
         return;
     }
@@ -160,8 +171,8 @@ app.post("/Drones", function (request, response) {
     dalDrones.saveDrone(Drone);
     response.status(201).location("../Drones/" + Drone.id).send();
 });
-
-app.listen(3556);
+*/
+app.listen(8000);
 console.log("Server started");
 
-console.log("Hellow World"); 
+//console.log("Hellow World"); 
