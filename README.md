@@ -9,4 +9,6 @@ In de les heeft deze namelijk heel wat problemen opgeleverd.
 
 http://coenraets.org/blog/2013/04/implementing-restful-services-with-node-js-and-mongodb/
 Hier lijkt een gelijkaardige oefening uitgewerkt te zijn, ik test deze. 
+*update: deze heeft niet geholpen 
+
 
