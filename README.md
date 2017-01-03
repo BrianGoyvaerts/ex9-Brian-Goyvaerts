@@ -13,5 +13,8 @@ Hier lijkt een gelijkaardige oefening uitgewerkt te zijn, ik test deze.
 
 Op aanraden van klasgenoten probeer ik met mongoose. 
 http://mongoosejs.com/
+Dit lijkt al een stuk simpeler dus ga ik hier ook in verder... 
+https://www.npmjs.com/package/mongoose
+
 
 
