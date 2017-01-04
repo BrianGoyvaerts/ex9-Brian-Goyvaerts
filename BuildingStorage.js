@@ -24,7 +24,7 @@ module.exports = {
         Building1.find(callback);
     },
     findBuilding: function (City, callback) {
-        Building1.find({City: city}, callback);
+        Building1.find({City: City}, callback);
     },
     createBuilding: function (building, callback) {
         Building1.create(building, callback);
