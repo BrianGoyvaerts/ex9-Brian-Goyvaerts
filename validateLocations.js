@@ -16,7 +16,7 @@ module.exports = {
             console.log("Name should be a string");
             errors++;
         }
-        if (typeof list["Name"] == "") {
+        if (typeof list["Name"] === "") {
             console.log("Fill in Name");
             errors++;
         }
@@ -26,7 +26,7 @@ module.exports = {
             console.log("Type should be a string");
             errors++;
         }
-        if (typeof list["Type"] == "") {
+        if (typeof list["Type"] === "") {
             console.log("Fill in Type");
             errors++;
         }

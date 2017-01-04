@@ -16,7 +16,7 @@ module.exports = {
             console.log("Name should be a string");
             errors++;
         }
-        if (typeof list["Name"] == "") {
+        if (typeof list["Name"] === "") {
             console.log("Fill in the name");
             errors++;
         }
@@ -26,7 +26,7 @@ module.exports = {
             console.log("Mac_Address should be a string");
             errors++;
         }
-        if (typeof list["Mac_Address"] == "") {
+        if (typeof list["Mac_Address"] === "") {
             console.log("Fill in the Mac_Address");
             errors++;
         }
@@ -36,7 +36,7 @@ module.exports = {
             console.log("Last_Packet_Date should be a date");
             errors++;
         }
-        if (typeof list["Last_Packet_Date"] == "") {
+        if (typeof list["Last_Packet_Date"] === "") {
             console.log("Fill in the Last_Packet_Date");
             errors++;
         }

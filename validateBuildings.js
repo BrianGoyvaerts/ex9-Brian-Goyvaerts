@@ -16,7 +16,7 @@ module.exports = {
             console.log("Name should be a string");
             errors++;
         }
-        if (typeof list["Name"] == "") {
+        if (typeof list["Name"] === "") {
             console.log("Fill in the name");
             errors++;
         }
@@ -26,11 +26,11 @@ module.exports = {
             console.log("City should be a string");
             errors++;
         }
-        if (typeof list["City"] == "") {
+        if (typeof list["City"] === "") {
             console.log("Name the city");
             errors++;
         }
-    return errors
+    return errors;
     }
 };
 
