@@ -16,9 +16,14 @@ http://mongoosejs.com/
 Dit lijkt al een stuk simpeler dus ga ik hier ook in verder... 
 https://www.npmjs.com/package/mongoose
 
+Kan niet connecten naar server... 
+
 so far so good... Ondanks de vele errors, geraak ik een stuk verder. 
 Dit door mij te baseren op Wibren's code. 
 Bij enkele zaken heb ik nog uitleg nodig... 
+
+Waarschuwingen bij mijn validators: verwacht 3x = (dus "===") 
+https://www.codecademy.com/en/forum_questions/558ea4f5e39efed371000508
 
 
 
