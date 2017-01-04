@@ -28,11 +28,13 @@ var LocationSchema = mongoose.Schema({
     }, 
     BlockID: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     }, 
     BuildingID: {
         type: Number,
-        required: true
+        required: true, 
+        unique: true
     }
 });
 

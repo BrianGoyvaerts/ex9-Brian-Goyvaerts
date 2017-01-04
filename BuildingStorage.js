@@ -16,17 +16,20 @@ var BuildingSchema = mongoose.Schema({
     }
 });
 
-var Building = mongoose.model('Buildings', BuildingSchema);
+var Building1 = mongoose.model('Buildings', BuildingSchema);
 
 module.exports = {
 
     listAllBuildings: function (callback) {
-        Building.find(callback);
+        Building1.find(callback);
     },
     findBuilding: function (City, callback) {
-        Building.find({City: city}, callback);
+        Building1.find({City: city}, callback);
     },
     createBuilding: function (building, callback) {
-        Building.create(building, callback);
+        Building1.create(building, callback);
+    }, 
+    updateBuilding: function (BuildingID, newName, newCity, callback) {
+        Building1.update({BuildingID: BuildingID}, newName, newCity, callback); 
     }
 };
