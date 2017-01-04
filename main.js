@@ -2,7 +2,7 @@ var express = require("express");
 var parser = require("body-parser");
 
 var mongoose = require ("mongoose"); 
-mongoose.connect("mongodb://localhost/testing"); 
+mongoose.connect("mongodb://localhost/1234"); 
 
 var dalBuildings    = require("./BuildingStorage.js");
 var dalBlocks       = require("./BlockStorage.js");
@@ -38,29 +38,75 @@ app.get("/Buildings/:name", function (request, response) {
     });
 }); 
 
-/*app.post("/Buildings", function (request, response) {
-    "use strict";
-    var Building = request.body; 
+var Building = function(BuildingID, Name, City) {
+    this.BuildingID = BuildingID; 
+    this.Name = Name; 
+    this.City = City; 
+}; 
 
-    var errors = validator.fieldsNotEmpty(Building, "Name", "City");
+app.post("/Buildings", function (request, response) {
+    var Building = new Building(request.body.BuildingID, request.body.Name, request.body.City); 
+
+    var errors = validateBuildings.checkValues(Building, "BuildingID", "Name", "City");
+    if (errors > 0) {
+        return; 
+    }
     
-    if (errors) {
-        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
-        return;
-    }
+    dalBuildings.createBuilding(Building, function(error, Building) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Building); 
+        console.log(JSON.stringify(Building)+"\n"+"added"); 
+    }); 
+}); 
 
-    var existingBuilding = dalBuildings.findBuilding(Building.Name);
-    if (existingBuilding) {
-        response.status(409).send({msg: "Name must be unique", link: "../Buildings/" + existingBuilding.id});
-        return;
+app.put("/Buildings/:BuildingID", function(request, response){
+    var Building = new Building(request.body.BuildingID, request.body.Name, request.body.City); 
+    var errors = validateBuildings.checkValues(Building, "BuildingID", "Name", "City"); 
+    if (errors > 0) {
+        return; 
     }
-    Building.id = Building.Name;
-    dalBuildings.saveBuilding(Building);
-    response.status(201).location("../Buildings/" + Building.id).send();
+    dalBuildings.updateBuilding(request.params.BuildingID, Name, City, function(error, Building) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Building); 
+        console.log(JSON.stringify(request.body.BuildingID)+"\n"+"updated"); 
+    }); 
+}); 
+
+//--Blocks--//
+app.get("/Blocks", function(request, response) {
+    dalBlocks.listAllBlocks(function(error, Blocks) {
+        if(error) {
+            throw error; 
+        }
+        response.send(Blocks); 
+    }); 
 });
 
+app.get("Blocks/:Name", function(request, response) {
+    dalBlocks.findBlock(request.params.Name, function(error, Block) {
+        if(error) {
+            throw error; 
+        }
+        response.send(Block); 
+    }); 
+});
 
+var Block = function(request, response) {
+    this.BlockID = BlockID; 
+    this.Name = Name; 
+    this.BuildingID = BuildingID; 
+}; 
 
+app.post("/Blocks", function(request, response) {
+    var Block = new Block(request.body.BlockID, request.body.Name, request.body.BuildingID); 
+    
+    var errors = validateBlocks.checkValue
+})
+/*
 
 app.get("/Blocks", function (request, response) {
     "use strict";
@@ -170,9 +216,8 @@ app.post("/Drones", function (request, response) {
     }
     dalDrones.saveDrone(Drone);
     response.status(201).location("../Drones/" + Drone.id).send();
-});
-*/
-app.listen(8000);
-console.log("Server started");
+});*/
 
-//console.log("Hellow World"); 
+app.listen(1234);
+console.log("Server started");
+console.log("Hellow World"); 
