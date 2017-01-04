@@ -1,8 +1,8 @@
+var mongoose = require ("mongoose"); 
+mongoose.connect("mongodb://localhost:27017/API"); 
+
 var express = require("express");
 var parser = require("body-parser");
-
-var mongoose = require ("mongoose"); 
-mongoose.connect("mongodb://localhost/1234"); 
 
 var dalBuildings    = require("./BuildingStorage.js");
 var dalBlocks       = require("./BlockStorage.js");
@@ -30,18 +30,18 @@ app.get("/Buildings", function (request, response) {
 }); 
 
 app.get("/Buildings/:name", function (request, response) {
-    dalBuildings.findBuildings(request.params.name, function(error, Buildings){
+    dalBuildings.findBuilding(request.params.name, function(error, Buildings){
         if (error) {
             throw error; 
         }
-        response.send(Building);
+        response.send(Buildings);
     });
 }); 
 
 var Building = function(BuildingID, Name, City) {
     this.BuildingID = BuildingID; 
-    this.Name = Name; 
-    this.City = City; 
+    this.Name       = Name; 
+    this.City       = City; 
 }; 
 
 app.post("/Buildings", function (request, response) {
@@ -67,7 +67,7 @@ app.put("/Buildings/:BuildingID", function(request, response){
     if (errors > 0) {
         return; 
     }
-    dalBuildings.updateBuilding(request.params.BuildingID, Name, City, function(error, Building1) {
+    dalBuildings.updateBuilding(request.params.BuildingID, Building1, function(error, Building1) {
         if(error) {
             console.log(error); 
         }
@@ -75,6 +75,7 @@ app.put("/Buildings/:BuildingID", function(request, response){
         console.log(JSON.stringify(request.body.BuildingID)+"\n"+"updated"); 
     }); 
 }); 
+
 
 //--Blocks--//
 app.get("/Blocks", function(request, response) {
@@ -251,7 +252,7 @@ app.put("/Drones/:DroneID", function(request, response) {
     if (errors > 0){
         return; 
     }
-    dalDrones.updateDrone(request.params.DroneID, Name, Mac_Address, Last_Packet_Date, BuildingID, BlockID, LocationID, function(error, Drone1) {
+    dalDrones.updateDrone(request.params.DroneID, Drone, function(error, Drone1) {
         if(error) {
             console.log(error); 
         }
@@ -261,6 +262,6 @@ app.put("/Drones/:DroneID", function(request, response) {
 });
 
 
-app.listen(1234);
-console.log("Server started");
+app.listen(27017);
+console.log("Starting Server");
 console.log("Hellow World"); 
