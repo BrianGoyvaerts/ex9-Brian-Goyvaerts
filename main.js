@@ -25,7 +25,7 @@ app.get("/Buildings", function (request, response) {
         if(error){
             throw error; 
         }
-    response.send(Locations); 
+    response.send(Buildings); 
     }); 
 }); 
 
@@ -45,33 +45,33 @@ var Building = function(BuildingID, Name, City) {
 }; 
 
 app.post("/Buildings", function (request, response) {
-    var Building = new Building(request.body.BuildingID, request.body.Name, request.body.City); 
+    var Building1 = new Building(request.body.BuildingID, request.body.Name, request.body.City); 
 
     var errors = validateBuildings.checkValues(Building, "BuildingID", "Name", "City");
     if (errors > 0) {
         return; 
     }
     
-    dalBuildings.createBuilding(Building, function(error, Building) {
+    dalBuildings.createBuilding(Building1, function(error, Building1) {
         if(error) {
             console.log(error); 
         }
-        response.send(Building); 
-        console.log(JSON.stringify(Building)+"\n"+"added"); 
+        response.send(Building1); 
+        console.log(JSON.stringify(Building1)+"\n"+"added"); 
     }); 
 }); 
 
 app.put("/Buildings/:BuildingID", function(request, response){
-    var Building = new Building(request.body.BuildingID, request.body.Name, request.body.City); 
-    var errors = validateBuildings.checkValues(Building, "BuildingID", "Name", "City"); 
+    var Building1 = new Building(request.body.BuildingID, request.body.Name, request.body.City); 
+    var errors = validateBuildings.checkValues(Building1, "BuildingID", "Name", "City"); 
     if (errors > 0) {
         return; 
     }
-    dalBuildings.updateBuilding(request.params.BuildingID, Name, City, function(error, Building) {
+    dalBuildings.updateBuilding(request.params.BuildingID, Name, City, function(error, Building1) {
         if(error) {
             console.log(error); 
         }
-        response.send(Building); 
+        response.send(Building1); 
         console.log(JSON.stringify(request.body.BuildingID)+"\n"+"updated"); 
     }); 
 }); 
@@ -104,119 +104,162 @@ var Block = function(request, response) {
 app.post("/Blocks", function(request, response) {
     var Block = new Block(request.body.BlockID, request.body.Name, request.body.BuildingID); 
     
-    var errors = validateBlocks.checkValue
-})
-/*
-
-app.get("/Blocks", function (request, response) {
-    "use strict";
-    response.send(dalBlocks.listAllBlocks());
-});
-
-app.get("/Blocks/:id", function (request, response) {
-    "use strict";
-    var Block = dalBlocks.findBlock(request.params.id);
-    if (Block) {
-        response.send(Block);
-    } else {
-        response.status(404).send();
+    var errors = validateBlocks.checkValues(Block, "BlockID", "Name", "BuildingID"); 
+    if (errors>0) {
+        return; 
     }
-});
+    
+    dalBlocks.createBlock(Block, function(error, Block1) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Block1); 
+        console.log(JSON.stringify(request.body.BlockID)+"\n"+"updated"); 
+    });
+}); 
 
-app.post("/Blocks", function (request, response) {
-    "use strict";
-    var Block = request.body;
-
-    var errors = validator.fieldsNotEmpty(Block, "Blockid", "blockname", "buildingid");
-    if (errors) {
-        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
-        return;
+app.put("/Blocks/:BlockID", function(request, response) {
+    var Block = new Block(request.body.BlockID, request.body.Name, request.body.BuildingID); 
+    var errors = validateBlocks.checkValues(Block, "BlockID", "Name", "BuildinID"); 
+    if (errors > 0){
+        return; 
     }
-
-    var existingBlock = dalBlocks.findBlock(Block.Blockid);
-    if (existingBlock) {
-        response.status(409).send({msg: "Blockid must be unique", link: "../Blocks/" + existingBlock.id});
-        return;
-    }
-    Block.id = Block.Blockid;
-    dalBlocks.saveBlock(Block);
-    response.status(201).location("../Blocks/" + Block.id).send();
+    dalBlocks.updateBlock(request.params.BlockID, Block, function(error, Block1) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Block1); 
+        console.log(JSON.stringify(request.body.BlockID)+"\n"+"updated"); 
+    });
 });
 
 
+//--Locations--//
+app.get("/Locations", function(request, response) {
+    dalLocations.listAllLocations(function(error, Locations) {
+        if(error) {
+            throw error; 
+        }
+        response.send(Locations); 
+    }); 
+}); 
+        
+app.get("/Locations/:LocationID", function(request, response) {
+    dalLocations.findLocation(request.params.LocationID, function(error, Location) {
+        if(error) {
+            throw error; 
+        }
+        response.send(Location); 
+    }); 
+}); 
 
+var Location = function(LocationID, Name, Type, Coordinate, Floor, Capacity, BlockID, BuildingID) {
+    this.LocationID = LocationID; 
+    this.Name = Name; 
+    this.Type = Type; 
+    this.Coordinate = Coordinate; 
+    this.Floor = Floor; 
+    this.Capacity = Capacity; 
+    this.BlockID = BlockID; 
+    this.BuildingID = BuildingID; 
+}; 
 
-app.get("/Locations", function (request, response) {
-    "use strict";
-    response.send(dalLocations.listAllLocations());
+app.post("/Location", function(request, response) {
+    var Location = new Location(request.body.LocationID, request.body.Name, request.body.Type, request.body.Coordinate, request.body.Floor, request.body.Capacity, request.body.BlockID, request.body.BuildingID);
+    
+    var errors = validateLocations.checkValues(Location, "LocationID", "Name", "Type", "Coordinate", "Floor", "Capacity", "BlockID", "BuildingID"); 
+    if (errors>0) {
+        return; 
+    }
+    
+    dalLocations.createLocation(Location, function(error, Location1) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Location1); 
+        console.log(JSON.stringify(request.body.Coordinate)+"\n"+"updated"); 
+    });
 });
 
-app.get("/Locations/:id", function (request, response) {
-    "use strict";
-    var Location = dalLocations.findLocation(request.params.id);
-    if (Location) {
-        response.send(Location);
-    } else {
-        response.status(404).send();
-    }
-});
 
-app.post("/Locations", function (request, response) {
-    "use strict";
-    var Location = request.body;
-
-    var errors = validator.fieldsNotEmpty(Location, "name", "type", "coordinate", "floor", "capacity", "blockid", "blockid");
-    if (errors) {
-        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
-        return;
+app.put("/Locations/:LocationID", function(request, response) {
+    var Location = new Location(request.body.LocationID, request.body.Name, request.body.Type, request.body.Coordinate, request.body.Floor, request.body.Capacity, request.body.BlockID, request.body.BuildingID); 
+    var errors = validateLocations.checkValues(Location, "LocationID", "Name", "Type", "Coordinate", "Floor", "Capacity", "BlockID", "BuildingID"); 
+    if (errors > 0){
+        return; 
     }
-
-    var existingLocation = dalLocations.findLocation(Location.locationid);
-    if (existingLocation) {
-        response.status(409).send({msg: "id must be unique", link: "../Locations/" + existingLocation.id});
-        return;
-    }
-    Location.id = Location.locationid;
-    dalLocations.saveLocation(Location);
-    response.status(201).location("../Locations/" + Location.id).send();
+    dalLocations.updateLocation(request.params.LocationID, Location, function(error, Location1) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Location1); 
+        console.log(JSON.stringify(request.body.Coordinate)+"\n"+"updated"); 
+    });
 });
 
 
+//--Drones--//
+app.get("/Drones", function(request, response) {
+    dalDrones.listAllDrones(function(error, Drones) {
+        if(error) {
+            throw error; 
+        }
+        response.send(Drones); 
+    }); 
+}); 
+        
+app.get("/Drones/:DroneID", function(request, response) {
+    dalDrones.findDrone(request.params.DroneID, function(error, Drone) {
+        if(error) {
+            throw error; 
+        }
+        response.send(Drone); 
+    }); 
+}); 
+var Drone = function(DroneID, Name, Mac_Address, Last_Packet_Date, LocationID, BlockID, BuildingID) {
 
+    this.DroneID = DroneID; 
+    this.Name = Name; 
+    this.Mac_Address = Mac_Address; 
+    this.Last_Packet_Date = Last_Packet_Date; 
+    this.LocationID = LocationID; 
+    this.BlockID = BlockID; 
+    this.BuildingID = BuildingID; 
+}; 
 
-app.get("/Drones", function (request, response) {
-    "use strict";
-    response.send(dalDrones.listAllDrones());
+app.post("/Drone", function(request, response) {
+    var Drone = new Drone(request.body.DroneID, request.body.Name, request.body.Mac_Address, request.body.Last_Packet_Date, request.body.LocationID, request.body.BlockID, request.body.BuildingID);
+    
+    var errors = validateDrones.checkValues(Drone, "DroneID", "Name", "Mac_Address", "Last_Packet_Date",  "LocationID", "BlockID", "BuildingID"); 
+    if (errors>0) {
+        return; 
+    }
+    
+    dalDrones.createDrone(Drone, function(error, Drone1) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Drone1); 
+        console.log(JSON.stringify(request.body.DroneID)+"\n"+"updated"); 
+    });
 });
 
-app.get("/Drones/:id", function (request, response) {
-    "use strict";
-    var Drone = dalDrones.findDrone(request.params.id);
-    if (Drone) {
-        response.send(Drone);
-    } else {
-        response.status(404).send();
+
+app.put("/Drones/:DroneID", function(request, response) {
+    var Drone = new Drone(request.body.DroneID, request.body.Name, request.body.Mac_Address, request.body.Last_Packet_Date, request.body.LocationID, request.body.BlockID, request.body.BuildingID); 
+    var errors = validateBlocks.checkValues(Drone, "DroneID", "Name", "Mac_Address", "Last_Packet_Date",  "LocationID", "BlockID", "BuildingID"); 
+    if (errors > 0){
+        return; 
     }
+    dalDrones.updateDrone(request.params.DroneID, Name, Mac_Address, Last_Packet_Date, BuildingID, BlockID, LocationID, function(error, Drone1) {
+        if(error) {
+            console.log(error); 
+        }
+        response.send(Drone1); 
+        console.log(JSON.stringify(request.body.DroneID)+"\n"+"updated"); 
+    });
 });
 
-app.post("/Drones", function (request, response) {
-    "use strict";
-    var Drone = request.body;
-
-    var errors = validator.fieldsNotEmpty(Drone, "name", "mac_address", "locationid", "last_packet_date", "blockid", "buildingid");
-    if (errors) {
-        response.status(400).send({msg: "Following field(s) are mandatory:" + errors.concat()});
-        return;
-    }
-
-    var existingDrone = dalDrones.findDrone(Drone.id);
-    if (existingDrone) {
-        response.status(409).send({msg: "id must be unique", link: "..//" + existingDrone.id});
-        return;
-    }
-    dalDrones.saveDrone(Drone);
-    response.status(201).location("../Drones/" + Drone.id).send();
-});*/
 
 app.listen(1234);
 console.log("Server started");
