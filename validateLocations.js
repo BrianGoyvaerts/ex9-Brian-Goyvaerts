@@ -1,5 +1,5 @@
 module.exports = {
-    checkvalues: function (list) {
+    checkValues: function (list) {
         var errors = 0;
 
         if (list["LocationID"] <= 0) {
@@ -82,4 +82,4 @@ module.exports = {
         }
         return errors;
     }
-}; //
+}; 
